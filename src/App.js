@@ -58,8 +58,6 @@ class App extends Component {
     const newDimension = this.state.innerDimension - 50;
     const newZIndex = this.state.innerZIndexCount + 1;
 
-    console.log(`newZIndex:`, newZIndex);
-
     circles.push({
       id: newId,
       dimension: newDimension,
@@ -76,7 +74,6 @@ class App extends Component {
   }
 
   addOuterCircle = () => {
-    console.log(`addOuterCircle()`);
     const circles = this.state.circles;
     const newId = this.state.idCount + 1
     const newDimension = this.state.outerDimension + 50;
@@ -98,14 +95,20 @@ class App extends Component {
   }
 
   rotateCircles = () => {
-    const circles = this.state.circles;
+    // const circles = this.state.circles;
 
-    const rotatedCircles = circles.map((circle) => {
-      circle.rotation = circle.rotation + this.state.rotationIncrement;
-      return circle;
-    })
+    // const rotatedCircles = circles.map((circle) => {
+    //   circle.rotation = circle.rotation + this.state.rotationIncrement;
+    //   return circle;
+    // })
+  }
 
-    this.setState({ circles: rotatedCircles });
+  clickHandler = (event) => {
+    if (event.target.id === 'outer-circle-create') {
+      this.addOuterCircle();
+    } else if (event.target.classList.contains('circle')) {
+      this.addInnerCircle();
+    }
   }
 
   render() {
@@ -117,7 +120,8 @@ class App extends Component {
         width: "100%",
         height: "100%",
         backgroundImage: this.state.backgroundGradient,
-      }}>
+      }}
+      onClick={ (event) => this.clickHandler.call(null, event) }>
         <img
         alt=""
         style={{
@@ -131,14 +135,14 @@ class App extends Component {
         onClick={ () => {
           if (!this.state.isRotating) {
             this.setState({
-              interval: setInterval(this.rotateCircles, 4),
+              // interval: setInterval(this.rotateCircles, 4),
               isRotating: true,
             });
           } else {
-            clearInterval(this.state.interval);
+            // clearInterval(this.state.interval);
 
             this.setState({
-              interval: null,
+              // interval: null,
               isRotating: false,
             })
           }
@@ -172,23 +176,25 @@ class App extends Component {
         <div id="circle-container"
         className="circle-container">
           { this.state.circles.map((circle) => {
-            return <div
-            key={circle.id}
-            id={ `circle-${ circle.id }` }
-            style={{
-              position: 'absolute',
-              width: `${ circle.dimension }px`,
-              height: `${circle.dimension}px`,
-              zIndex: circle.zIndex,
-              background: circle.background,
-              borderRadius: "50%",
-              top: "50%",
-              left: "50%",
-              marginLeft: `-${circle.dimension / 2}px`,
-              marginTop: `-${ circle.dimension / 2 }px`,
-              transform: `rotate(${ circle.rotation }deg)`,
-            }}
-            />
+            return (
+              <div
+              className={`circle${ this.state.isRotating ? ' is-rotating' : ''}`}
+              key={circle.id}
+              id={ `circle-${ circle.id }` }
+              style={{
+                position: 'absolute',
+                width: `${ circle.dimension }px`,
+                height: `${circle.dimension}px`,
+                zIndex: circle.zIndex,
+                background: circle.background,
+                borderRadius: "50%",
+                top: "50%",
+                left: "50%",
+                marginLeft: `-${circle.dimension / 2}px`,
+                marginTop: `-${ circle.dimension / 2 }px`,
+              }}
+              />
+            )
           }) }
         </div>
       </div>
